@@ -4,13 +4,13 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
-#include "logger.h"
+
 
 #define OUT_LOG_FILE "/var/log/task_loglib.db"
 
-static char * g_program_name = NULL;
+static char * g_program_name;
 static sqlite3 *g_db;
-static char *zErrMsg = 0;
+static char *zErrMsg;
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
   int i;
@@ -47,9 +47,10 @@ static int log_create_db() {
 }
 
 int logging_init(const char* program_name) {
+    zErrMsg = 0;
     g_program_name = (char*)malloc(256);
     strncpy(g_program_name, program_name, 256);
-
+    
     int rc = sqlite3_open(OUT_LOG_FILE, &g_db);
     if( rc ) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(g_db));
@@ -83,7 +84,6 @@ int log_send_message(const char* message, int warning_level, const char* file_na
     // add date time
     struct tm *t = localtime(&now);
     strftime(buffer, sizeof(buffer)-1, "%Y-%m-%d %H:%M", t);
-    printf("Current Date: %s", buffer);
     strncat(sql_command,  ", \"" , sizeof(sql_command) - 1);
     strncat(sql_command,  buffer, sizeof(sql_command) - 1);
 

@@ -14,10 +14,10 @@ PREFIX?=/usr
 all: $(LIB)
 
 $(LIB): $(OBJS)
-	$(CC) $(CFLAGS) $(EXTRAFLAGS) -o $@ $(LDFLAGS) $(OBJS)
+	$(CC) $(CFLAGS) $(EXTRAFLAGS) $(LDFLAGS) -o $@ $(OBJS) -lsqlite3
 
 %.o:%.c
-	$(CC) $(CFLAGS) $(EXTRAFLAGS) -o $@ $^ $(LDFLAGS) -lsqlite3
+	$(CC) $(CFLAGS) $(EXTRAFLAGS) -c -o $@ $^ -lsqlite3
 
 clean:
 	$(RM) $(LIB)

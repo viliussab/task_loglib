@@ -46,10 +46,14 @@ static int log_create_db() {
     return 0;
 }
 
-int logging_init(const char* program_name) {
+int logging_init(char* program_name) {
     zErrMsg = 0;
+    char *name = program_name;
+    if (program_name[0] == '.' && program_name[1] == '/') {
+        name += 2;
+    }
     g_program_name = (char*)malloc(256);
-    strncpy(g_program_name, program_name, 256);
+    strncpy(g_program_name, name, 256);
     
     int rc = sqlite3_open(OUT_LOG_FILE, &g_db);
     if( rc ) {
@@ -131,5 +135,51 @@ int logging_shutdown() {
         return 1;
     }
     sqlite3_free(zErrMsg);
+    return 0;
+}
+
+
+int get_logs() {
+    char sql_command[] = "select * from Log";
+
+    int rc = sqlite3_exec(g_db,
+        sql_command,
+        callback,
+        0,
+        &zErrMsg);
+
+    if( rc!=SQLITE_OK ) {
+        fprintf(stderr, "%d\n", rc);
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        fprintf(stderr, "Failed to retrieve log information from logging server, aborting...\n");
+        sqlite3_free(zErrMsg);
+        sqlite3_close(g_db);
+        return 1;
+    }
+
+    return 0;
+}
+
+int get_program_logs(const char* program_name) {
+
+    char sql_command[256] = "select * from Log where program = \"";
+    strncat(sql_command, program_name, sizeof(sql_command) - 1);
+    strncat(sql_command, "\"", sizeof(sql_command) - 1);
+
+    int rc = sqlite3_exec(g_db,
+        sql_command,
+        callback,
+        0,
+        &zErrMsg);
+
+    if( rc!=SQLITE_OK ) {
+        fprintf(stderr, "%d\n", rc);
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        fprintf(stderr, "Failed to retrieve log information from logging server, aborting...\n");
+        sqlite3_free(zErrMsg);
+        sqlite3_close(g_db);
+        return 1;
+    }
+
     return 0;
 }

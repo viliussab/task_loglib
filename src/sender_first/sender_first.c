@@ -1,3 +1,4 @@
+// Sender program that sends messages every second
 
 #include <stdio.h>
 #include <unistd.h>

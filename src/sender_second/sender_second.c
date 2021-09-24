@@ -1,3 +1,5 @@
+// Sender program that sends messages every 100 ms
+
 #include <logger.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -15,13 +17,13 @@ int main(int argc, char *argv[]) {
 
     int i = 0;
 
-    while (i < 15) {
+    while (i < 200) {
         rc = log_stuff(argv[1], LOG_FATAL);
         if (rc) {
             printf("Error while logging\n");
             return 1;
         }
-        sleep(1);
+        usleep(100000);
         i++;
     }
 

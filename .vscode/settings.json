@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "sqlite3.h": "c",
-        "stdio.h": "c",
-        "logger.h": "c"
-    }
-}

@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         printf("Usage: sender_first message\n");
         return 1;
     }
-    int rc = logging_init(argv[0]);
+    int rc = logging_open("program1");
     if (rc) {
         printf("Error while connecting to DB");
         return 1;
@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
 
     int i = 0;
     while (i < 30) {
-        int rc = 0; log_stuff(argv[1], LOG_INFO);
+        int rc = 0;
+        log(argv[1], LOG_INFO);
         if (rc) {
             printf("Error while logging");
             return 1;

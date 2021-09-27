@@ -20,13 +20,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    logging_init("");
+    logging_open(NULL);
     if (filename != NULL) {
         printf("Searching logs of program name %s\n", filename);
-        rc = get_program_logs(filename);
+        rc = get_logs(filename);
     }
     else {
-        rc = get_logs();
+        rc = get_logs(NULL);
     }
     
     if (rc) {
@@ -34,6 +34,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
-    logging_shutdown();
+    logging_close();
     return 0;
 }
